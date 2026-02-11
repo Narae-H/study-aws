@@ -19,6 +19,10 @@
   Auto Scaling Groups 개념 및 설정
 <br/>
 
+## ECS (Amazon Elastic Container Service)
+- [1. Clusters](./ecs/1_clusters.md)
+  클러스터, 서비스, 타스크 생성 등
+
 # 📝 정리 기준
 - **서비스별로 파일 분리**하여 구조화
 - **공식 문서 요약 + 실습 기반 정리**
