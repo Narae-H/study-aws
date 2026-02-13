@@ -92,10 +92,10 @@ flowchart TD
 ```
 
 **각 단계 바로가기:**
-- [1. Cluster 생성](#생성-방법-aws-console)
-- [2. Task Definition 작성](#생성-방법-1)
-- [3-a. Service 생성](#생성-방법-2)
-- [3-b. Task 직접 실행](#task)
+- [1. Cluster 생성](/ecs/1_clusters.md#생성-방법-aws-console)
+- [2. Task Definition 작성](/ecs/1_clusters.md#생성-방법-aws-console-1)
+- [3-a. Service 생성](/ecs/1_clusters.md#생성-방법-aws-console-2)
+- [3-b. Task 직접 실행](/ecs/1_clusters.md#실행-방법-aws-console)
 <br/>
 
 ## 왜 사용하나?
