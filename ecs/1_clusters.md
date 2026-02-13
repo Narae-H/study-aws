@@ -289,24 +289,24 @@
 
 **Naming Convention:**
 ```
-형식: {project}-{environment}-{layer}-sg
+형식: {project}-{component}-{env}-sg
 
 예시:
-- myproject-dev-alb-sg      (ALB용)
-- myproject-dev-ecs-sg      (모든 ECS Service 공유)
-- myproject-dev-rds-sg      (RDS용)
-- myproject-prod-alb-sg
-- myproject-prod-ecs-sg
-- myproject-prod-rds-sg
+- myproject-alb-dev-sg      (ALB용)
+- myproject-ecs-dev-sg      (모든 ECS Service 공유)
+- myproject-rds-dev-sg      (RDS용)
+- myproject-alb-prod-sg
+- myproject-ecs-prod-sg
+- myproject-rds-prod-sg
 ```
 
 **구조 다이어그램:**
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph LR
-    Internet["🌐 인터넷<br/>Client"] -->|"HTTP(80)<br/>HTTPS(443)"| ALB["⚖️ ALB<br/>myproject-dev-alb-sg"]
-    ALB -->|"Port 8080"| ECS["🐳 ECS Services<br/>myproject-dev-ecs-sg<br/>(Spring Boot)"]
-    ECS -->|"Port 3306"| RDS["🗄️ Aurora MariaDB<br/>myproject-dev-rds-sg"]
+    Internet["🌐 인터넷<br/>Client"] -->|"HTTP(80)<br/>HTTPS(443)"| ALB["⚖️ ALB<br/>myproject-alb-dev-sg"]
+    ALB -->|"Port 8080"| ECS["🐳 ECS Services<br/>myproject-ecs-dev-sg<br/>(Spring Boot)"]
+    ECS -->|"Port 3306"| RDS["🗄️ Aurora MariaDB<br/>myproject-rds-dev-sg"]
     ECS -->|"Port 8080"| ECS2["🐳 Other ECS Service<br/>(서비스 간 통신)"]
     ECS -->|"HTTPS(443)"| AWS["☁️ AWS Services<br/>(ECR, API)"]
     
@@ -320,7 +320,7 @@ graph LR
 
 **구조 예시 (Dev/Prod - Spring Boot + Aurora MariaDB):**
 
-### 1. ALB Security Group: `myproject-dev-alb-sg`
+### 1. ALB Security Group: `myproject-alb-dev-sg`
 
 **Inbound Rules:**
 | Name | IP version | Type | Protocol | Port range | Source | Description |
@@ -331,29 +331,29 @@ graph LR
 **Outbound Rules:**
 | Name | IP version | Type | Protocol | Port range | Destination | Description |
 |------|------------|------|----------|------------|-------------|-------------|
-| Spring Boot | IPv4 | Custom TCP | TCP | 8080 | myproject-dev-ecs-sg | To ECS Spring Boot |
+| Spring Boot | IPv4 | Custom TCP | TCP | 8080 | myproject-ecs-dev-sg | To ECS Spring Boot |
 
-### 2. ECS Security Group: `myproject-dev-ecs-sg` (모든 서비스 공유)
+### 2. ECS Security Group: `myproject-ecs-dev-sg` (모든 서비스 공유)
 
 **Inbound Rules:**
 | Name | IP version | Type | Protocol | Port range | Source | Description |
 |------|------------|------|----------|------------|--------|-------------|
-| From ALB | IPv4 | Custom TCP | TCP | 8080 | myproject-dev-alb-sg | ALB to Spring Boot |
-| Service to Service | IPv4 | Custom TCP | TCP | 8080 | myproject-dev-ecs-sg | Inter-service communication |
+| From ALB | IPv4 | Custom TCP | TCP | 8080 | myproject-alb-dev-sg | ALB to Spring Boot |
+| Service to Service | IPv4 | Custom TCP | TCP | 8080 | myproject-ecs-dev-sg | Inter-service communication |
 
 **Outbound Rules:**
 | Name | IP version | Type | Protocol | Port range | Destination | Description |
 |------|------------|------|----------|------------|-------------|-------------|
 | HTTPS | IPv4 | HTTPS | TCP | 443 | 0.0.0.0/0 | ECR, AWS API access |
-| Aurora MariaDB | IPv4 | MYSQL/Aurora | TCP | 3306 | myproject-dev-rds-sg | Database connection |
-| Service to Service | IPv4 | Custom TCP | TCP | 8080 | myproject-dev-ecs-sg | Inter-service communication |
+| Aurora MariaDB | IPv4 | MYSQL/Aurora | TCP | 3306 | myproject-rds-dev-sg | Database connection |
+| Service to Service | IPv4 | Custom TCP | TCP | 8080 | myproject-ecs-dev-sg | Inter-service communication |
 
-### 3. RDS Security Group: `myproject-dev-rds-sg`
+### 3. RDS Security Group: `myproject-rds-dev-sg`
 
 **Inbound Rules:**
 | Name | IP version | Type | Protocol | Port range | Source | Description |
 |------|------------|------|----------|------------|--------|-------------|
-| From ECS | IPv4 | MYSQL/Aurora | TCP | 3306 | myproject-dev-ecs-sg | Aurora MariaDB from ECS |
+| From ECS | IPv4 | MYSQL/Aurora | TCP | 3306 | myproject-ecs-dev-sg | Aurora MariaDB from ECS |
 
 **Outbound Rules:**
 - (기본 outbound 규칙만 유지, 추가 불필요)
